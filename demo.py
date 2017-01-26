@@ -4,24 +4,22 @@ sys.path.append("build")
 import example
 import numpy as np
 
-# print(example.getInverse(np.array([[1,2],[3,4]])))
+x = example.Variable("x")
+y = example.Variable("y")
+print(x, y)
 
-c = example.MyClass("hello")
-print(c)
-print(c.getName())
+e1 = x + y
+print(e1.getValue())
+e2 = e1 + 3
+print(e2.getValue())
+e3 = e1 + (x + 1 + y)
+print(e3.getValue())
 
-v = example.factory()
-print(v)
-vec = np.array([v[i] for i in range(len(v))])
-print(vec)
-print(np.sum(vec).getName())
+xy = example.NewVariables()
+print(xy)
+xyarr = np.array([xy[i] for i in range(len(xy))])
+print(xyarr)
+print(np.sum(xyarr).getValue())
 
-print(v[0])
-print(v[0].getName())
-
-x = np.array([1.0, 2, 3])
-print(example.mysum(x))
-
-myclass_array = np.array([example.MyClass("hello"), example.MyClass("world")])
-print(np.sum(myclass_array).getName())
-
+xyarr_plus_one = xyarr + 1
+print([x.getValue() for x in xyarr_plus_one])

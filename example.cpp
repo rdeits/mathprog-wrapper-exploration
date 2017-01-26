@@ -3,59 +3,92 @@
 #include <pybind11/eigen.h>
 #include <Eigen/Core>
 
-struct MyClass {
-public:
-  MyClass(): myname("dummy") {};
-  MyClass(std::string _myname): myname(_myname) {};
+class Variable;
 
-  std::string getName() {
-    return myname;
-  }
-
-  MyClass operator +(const MyClass &other) const {
-    return MyClass(myname + other.myname);
-  }
-
+class Expression {
 private:
-  std::string myname;
+  std::string value;
+
+public:
+  Expression(const std::string &_val): value(_val) {}
+
+  std::string getValue() const { return value; }
+
+  Expression operator +(const Expression &other) const {
+    return Expression(value + " + " + other.value);
+  }
+
+  Expression operator +(const Variable &other) const;
+
+  Expression operator +(int other) const {
+    std::stringstream ss;
+    ss << other;
+    return Expression(value + " + " + ss.str());
+  }
 };
 
-Eigen::Matrix<MyClass, Eigen::Dynamic, 1> factory() {
-  Eigen::Matrix<MyClass, Eigen::Dynamic, 1> result(2);
-  result << MyClass("first"), MyClass("second");
+class Variable {
+private:
+  std::string name;
+
+public:
+  Variable(const std::string &_name): name(_name) {}
+  Variable(): name("") {}
+
+  std::string getName() const { return name; }
+
+  Expression operator +(const Variable &other) const {
+    return Expression(name + " + " + other.name);
+  }
+
+  Expression operator +(int other) const {
+    std::stringstream ss;
+    ss << other;
+    return Expression(name + " + " + ss.str());
+  }
+};
+
+Expression Expression::operator +(const Variable &other) const {
+  return Expression(value + " + " + other.getName());
+}
+
+
+Eigen::Matrix<Variable, Eigen::Dynamic, 1> NewVariables() {
+  Eigen::Matrix<Variable, Eigen::Dynamic, 1> result(2);
+  result << Variable("x"), Variable("y");
   return result;
 }
 
 namespace py = pybind11;
 
-typedef Eigen::Matrix<MyClass, Eigen::Dynamic, 1> VectorXMyClass;
-// PYBIND11_MAKE_OPAQUE(MyClass);
-PYBIND11_MAKE_OPAQUE(VectorXMyClass);
+typedef Eigen::Matrix<Variable, Eigen::Dynamic, 1> VectorXVariable;
+PYBIND11_MAKE_OPAQUE(VectorXVariable);
 
-const MyClass& getitem(const VectorXMyClass & vec, int i) {
-  return vec(i);
-}
+typedef Eigen::Matrix<Expression, Eigen::Dynamic, 1> VectorXExpression;
+PYBIND11_MAKE_OPAQUE(VectorXExpression);
 
-double mysum(const Eigen::Matrix<double, -1, -1> & vec) {
-  return vec.sum();
-}
 
 PYBIND11_PLUGIN(example) {
 
   py::module m("example", "pybind11 example plugin");
 
-  py::class_<MyClass>(m, "MyClass")
+  py::class_<Variable>(m, "Variable")
     .def(py::init<const std::string &>())
-    .def("getName", &MyClass::getName)
-    .def(py::self + py::self);
+    .def("getName", &Variable::getName)
+    .def(py::self + py::self)
+    .def(py::self + int());
 
-  py::class_<VectorXMyClass>(m, "VectorXMyClass")
-    .def("__getitem__", &getitem, py::return_value_policy::reference)
-    .def("__len__", [](const VectorXMyClass &v) {return v.size();});
+  py::class_<Expression>(m, "Expression")
+    .def(py::init<const std::string &>())
+    .def("getValue", &Expression::getValue)
+    .def(py::self + py::self)
+    .def(py::self + int())
+    .def(py::self + Variable());
 
+  py::class_<VectorXVariable>(m, "VectorXVariable")
+    .def("__getitem__", [](const VectorXVariable &v, int i) {return v(i); }, py::return_value_policy::reference)
+    .def("__len__", [](const VectorXVariable &v) {return v.size();});
 
-  m.def("mysum", &mysum, "mysum's documentation");
-
-  m.def("factory", &factory, "factory");
+  m.def("NewVariables", &NewVariables, "make some variables");
   return m.ptr();
 }

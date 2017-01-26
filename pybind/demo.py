@@ -1,11 +1,11 @@
 import sys
 sys.path.append("build")
 
-import example
+import expressions
 import numpy as np
 
-x = example.Variable("x")
-y = example.Variable("y")
+x = expressions.Variable("x")
+y = expressions.Variable("y")
 print(x, y)
 
 e1 = x + y
@@ -15,7 +15,7 @@ print(e2.getValue())
 e3 = e1 + (x + 1 + y)
 print(e3.getValue())
 
-xy = example.NewVariables()
+xy = expressions.NewVariables()
 print(xy)
 xyarr = np.array([xy[i] for i in range(len(xy))])
 print(xyarr)

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(example)
+project(expressions)
 
 add_subdirectory(pybind11)
 
@@ -21,4 +21,4 @@ else()
   include_directories(${CMAKE_INSTALL_PREFIX}/include/eigen3)
 endif()
 
-pybind11_add_module(example example.cpp)
+pybind11_add_module(expressions expressions.cpp)

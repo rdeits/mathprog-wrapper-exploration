@@ -7,6 +7,8 @@
 namespace py = pybind11;
 
 // PYBIND11_MAKE_OPAQUE(VectorXVariable);
+PYBIND11_NUMPY_OBJECT_DTYPE(Variable);
+PYBIND11_NUMPY_OBJECT_DTYPE(Expression);
 
 typedef Eigen::Matrix<Expression, Eigen::Dynamic, 1> VectorXExpression;
 // PYBIND11_MAKE_OPAQUE(VectorXExpression);

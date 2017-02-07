@@ -1,24 +1,22 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(expressions)
+include(ExternalProject)
 
-add_subdirectory(pybind11)
+ExternalProject_Add(eigen-pod
+  GIT_REPOSITORY https://github.com/RobotLocomotion/eigen-pod.git
+  GIT_TAG ceba39500b89a77a8649b3e8b421b10a3d74d42b
+  BUILD_IN_SOURCE 1
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND make BUILD_PREFIX=${CMAKE_INSTALL_PREFIX} BUILD_TYPE=${CMAKE_BUILD_TYPE}
+  UPDATE_COMMAND ""
+  INSTALL_COMMAND ""
+  )
 
-find_package( Eigen3 )
-if (EIGEN3_FOUND)
-  include_directories( ${EIGEN3_INCLUDE_DIR} )
-else()
-    message("Eigen3 not found, so I'm installing it from source. ")
-  include(ExternalProject)
-  ExternalProject_Add(eigen-pod
-    GIT_REPOSITORY https://github.com/RobotLocomotion/eigen-pod.git
-    GIT_TAG ceba39500b89a77a8649b3e8b421b10a3d74d42b
-    BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND make BUILD_PREFIX=${CMAKE_INSTALL_PREFIX} BUILD_TYPE=${CMAKE_BUILD_TYPE}
-    UPDATE_COMMAND ""
-    INSTALL_COMMAND ""
-    )
-  include_directories(${CMAKE_INSTALL_PREFIX}/include/eigen3)
-endif()
+ExternalProject_Add(pybind-demo
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
+    DEPENDS eigen-pod
+    CMAKE_ARGS 
+      -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} 
+      -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+  )
 
-pybind11_add_module(expressions expressions.cpp)

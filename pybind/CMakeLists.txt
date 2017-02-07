@@ -18,5 +18,11 @@ ExternalProject_Add(pybind-demo
     CMAKE_ARGS 
       -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} 
       -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    INSTALL_COMMAND ""
   )
 
+ExternalProject_Add_Step(pybind-demo forceconfigure
+  COMMAND ${CMAKE_COMMAND} -E echo "Force configure of pybind-demo"
+  DEPENDEES update
+  DEPENDERS configure
+  ALWAYS 1)

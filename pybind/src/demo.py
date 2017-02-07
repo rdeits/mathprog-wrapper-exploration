@@ -1,5 +1,5 @@
 import sys
-sys.path.append("build")
+sys.path.append("../build/pybind-demo-prefix/src/pybind-demo-build")
 
 import expressions
 import numpy as np
@@ -17,9 +17,9 @@ print(e3.getValue())
 
 xy = expressions.NewVariables()
 print(xy)
-xyarr = np.array([xy[i] for i in range(len(xy))])
-print(xyarr)
-print(np.sum(xyarr).getValue())
+print(np.sum(xy).getValue())
+print(expressions.num_variables(xy))
 
-xyarr_plus_one = xyarr + 1
-print([x.getValue() for x in xyarr_plus_one])
+xy_plus_one = xy + 1
+print([x.getValue() for x in xy_plus_one])
+

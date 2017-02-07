@@ -6,13 +6,10 @@
 
 namespace py = pybind11;
 
-// PYBIND11_MAKE_OPAQUE(VectorXVariable);
 PYBIND11_NUMPY_OBJECT_DTYPE(Variable);
 PYBIND11_NUMPY_OBJECT_DTYPE(Expression);
 
 typedef Eigen::Matrix<Expression, Eigen::Dynamic, 1> VectorXExpression;
-// PYBIND11_MAKE_OPAQUE(VectorXExpression);
-
 
 PYBIND11_PLUGIN(expressions) {
 
@@ -31,10 +28,8 @@ PYBIND11_PLUGIN(expressions) {
     .def(py::self + int())
     .def(py::self + Variable());
 
-  // py::class_<VectorXVariable>(m, "VectorXVariable")
-  //   .def("__getitem__", [](const VectorXVariable &v, int i) {return v(i); }, py::return_value_policy::reference)
-  //   .def("__len__", [](const VectorXVariable &v) {return v.size();});
-
   m.def("NewVariables", &NewVariables, "make some variables");
+
+  m.def("num_variables", &num_variables, "count the variables in a vector");
   return m.ptr();
 }

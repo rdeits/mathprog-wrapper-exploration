@@ -63,3 +63,6 @@ VectorXVariable NewVariables() {
   return result;
 }
 
+int num_variables(const VectorXVariable& v) {
+  return v.size();
+}

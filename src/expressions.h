@@ -63,6 +63,15 @@ VectorXVariable NewVariables() {
   return result;
 }
 
-int num_variables(const VectorXVariable& v) {
+int NumVariables(const VectorXVariable& v) {
   return v.size();
+}
+
+Eigen::Matrix<Variable, 2, 1> TwoVariables() {
+  Eigen::Matrix<Variable, 2, 1> result(Variable("x"), Variable("y"));
+  return result;
+}
+
+Expression SumTwoVariables(const Eigen::Matrix<Variable, 2, 1>& v) {
+  return v(0) + v(1);
 }

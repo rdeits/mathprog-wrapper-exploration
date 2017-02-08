@@ -18,8 +18,11 @@ print(e3.getValue())
 xy = expressions.NewVariables()
 print(xy)
 print(np.sum(xy).getValue())
-print(expressions.num_variables(xy))
+print(expressions.NumVariables(xy))
 
 xy_plus_one = xy + 1
 print([x.getValue() for x in xy_plus_one])
 
+xy_two = expressions.TwoNewVariables()
+print(xy_two)
+print(expressions.SumTwoVariables(xy_two))

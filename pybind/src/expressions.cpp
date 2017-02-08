@@ -29,7 +29,9 @@ PYBIND11_PLUGIN(expressions) {
     .def(py::self + Variable());
 
   m.def("NewVariables", &NewVariables, "make some variables");
+  m.def("NumVariables", &NumVariables, "count the variables in a vector");
+  m.def("TwoNewVariables", &TwoNewVariables);
+  m.def("SumTwoVariables", &SumTwoVariables);
 
-  m.def("num_variables", &num_variables, "count the variables in a vector");
   return m.ptr();
 }
